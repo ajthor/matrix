@@ -147,6 +147,12 @@ _.extend(Matrix.prototype, {
 			}
 		}
 	},
+
+	clone: function() {
+		var result = new this.constructor(this.dimensions);
+		result.copy(this);
+		return result;
+	},
 	// ForEach Function
 	// ----------------
 	// Cycles over each value in a matrix and passes the value and 
@@ -489,7 +495,7 @@ _.extend(Matrix.prototype, {
 
 	// Row Sums
 	// --------
-	// Computes the sum of the row values in a single-column array.
+	// Computes the sum of the row values into a single-column array.
 	sum: function() {
 		var row, col;
 		var result = new Matrix([this.rows, 1]);
