@@ -91,7 +91,7 @@ In this way, you can use all of the Matrix math functions:
 
 - `add` - Can add scalars and matrices together.
 - `sub` - Can subtract scalars and matrices from each other. *Be careful with the syntax here. `Matrix.sub(3, A, B)` equates to __3__ - __A__ - __B__.
-- `dot` - Can compute the dot produc of matrices. (Prototype function can only accept matrices of the same, square dimensions)
+- `dot` - Can compute the dot product of matrices. (Prototype function can only accept matrices of the same, square dimensions)
 - `product` - Can multiply scalars and matrices together. (Default is dot product for matrix multiplication)
 - `mult` - Can multiply matrices together using Hadamard (element-wise) multiplication. The element-wise product is a product which multiplies straight across. Element *ij* in matrix __A__ is multiplied by element *ij* in matrix __B__.
 - `pow` - Can raise matrices to (positive) powers or 0. (Inverse multiplication is not yet supported)
