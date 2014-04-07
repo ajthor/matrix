@@ -166,7 +166,8 @@ _.extend(Matrix.prototype, {
 			this.value[row] = [];
 
 			for(col = 0; col < this.cols; col++) {
-				this.value[row][col] = value;
+				if(_.isFunction(value)) this.value[row][col] = value();
+				else this.value[row][col] = value;
 			}
 		}
 	}
