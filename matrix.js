@@ -153,6 +153,23 @@ _.extend(Matrix.prototype, {
 		result.copy(this);
 		return result;
 	},
+	// Map Function
+	// ------------
+	// Cycles over each value in a matrix and modifies that value 
+	// based on the result of a callback.
+	map: function(cb, handler) {
+		handler || (handler = this);
+		if(!_.isFunction(cb)) throw "Must pass a function to the \'map\' function.";
+		var row, col, result;
+		for(row = 0; row < this.rows; row++) {
+			for(col = 0; col < this.cols; col++) {
+				result = null;
+				result = cb.call(handler, this.value[row][col], row, col, this);
+				if((typeof result !== 'undefined') && (result !== null))
+					this.value[row][col] = result;
+			}
+		}
+	},
 	// ForEach Function
 	// ----------------
 	// Cycles over each value in a matrix and passes the value and 
