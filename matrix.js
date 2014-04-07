@@ -148,6 +148,51 @@ _.extend(Matrix.prototype, {
 		}
 	},
 
+	clone: function() {
+		var result = new this.constructor(this.dimensions);
+		result.copy(this);
+		return result;
+	},
+	// Map Function
+	// ------------
+	// Cycles over each value in a matrix and modifies that value 
+	// based on the result of a callback.
+	map: function(cb, handler) {
+		handler || (handler = this);
+		if(!_.isFunction(cb)) throw "Must pass a function to the \'map\' function.";
+		var row, col, result;
+		for(row = 0; row < this.rows; row++) {
+			for(col = 0; col < this.cols; col++) {
+				result = null;
+				result = cb.call(handler, this.value[row][col], row, col, this);
+				if((typeof result !== 'undefined') && (result !== null))
+					this.value[row][col] = result;
+			}
+		}
+	},
+	// ForEach Function
+	// ----------------
+	// Cycles over each value in a matrix and passes the value and 
+	// indices to a custom callback function.
+	forEach: function(cb, handler) {
+		handler || (handler = this);
+		if(!_.isFunction(cb)) throw "Must pass a function to the \'forEach\' function.";
+		var row, col;
+		for(row = 0; row < this.rows; row++) {
+			for(col = 0; col < this.cols; col++) {
+				cb.call(handler, this.value[row][col], row, col, this);
+			}
+		}
+	},
+	forEachRow: function(cb, handler) {
+		handler || (handler = this);
+		if(!_.isFunction(cb)) throw "Must pass a function to the \'forEachRow\' function.";
+		var row;
+		for(row = 0; row < this.rows; row++) {
+			cb.call(handler, this.value[row], row, this);
+		}
+	},
+
 	reset: function(value) {
 		this.zero();
 		for(i = 0; i < this.dimensions[0]; i++) {
@@ -457,8 +502,28 @@ _.extend(Matrix.prototype, {
 		}
 
 		return this;
-	}
+	},
 
+// Neural Network Matrix Functions
+// -------------------------------
+// These functions are primarily for use with neural networks and 
+// will greatly simplify the operations required for neural network 
+// matrix math operations.
+
+	// Row Sums
+	// --------
+	// Computes the sum of the row values into a single-column array.
+	sum: function() {
+		var row, col;
+		var result = new Matrix([this.rows, 1]);
+		for(row = 0; row < this.rows; row++) {
+			for(col = 0; col < this.cols; col++) {
+				result[row][0] += this.get(row, col);
+			}
+		}
+
+		return result;
+	}
 });
 
 
