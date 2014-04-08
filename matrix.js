@@ -220,13 +220,30 @@ _.extend(Matrix.prototype, {
 	}
 });
 
-// Matrix Math Functions
-// =====================
-// Functions are implemented on the Matrix object, i.e. not part of  
-// the prototype object. These functions accept multiple arguments 
-// and return a new Matrix object. Arguments can be 
-// scalars or Matrices.
+
 _.extend(Matrix, {
+	// Join Function
+	// -------------
+	// Merges two matrices together horizontally, i.e. it doesn't add 
+	// any new rows, but adds the information in new columns to the 
+	// existing rows. Joined matrices must have the same 
+	// number of rows.
+	join: function(A, B) {
+		var i, row, result;
+		if(A.rows !== B.rows) throw "Must supply arrays with equal rows.";
+		result = [];
+		for(row = 0; row < A.rows; row++) {
+			result[row] = A.value[row].concat(B.value[row]);
+		}
+		return new Matrix(result);
+	},
+
+	// Matrix Math Functions
+	// =====================
+	// Functions are implemented on the Matrix object, i.e. not part of  
+	// the prototype object. These functions accept multiple arguments 
+	// and return a new Matrix object. Arguments can be 
+	// scalars or Matrices.
 
 	// Addition and Subtraction Functions
 	// ----------------------------------
