@@ -235,7 +235,8 @@ _.extend(Matrix, {
 		for(row = 0; row < A.rows; row++) {
 			result[row] = A.value[row].concat(B.value[row]);
 		}
-		return new Matrix(result);
+		result = new Matrix(result);
+		return result;
 	},
 
 	// Matrix Math Functions
@@ -534,13 +535,14 @@ _.extend(Matrix.prototype, {
 	// Computes the sum of the row values into a single-column array.
 	sum: function() {
 		var row, col;
-		var result = new Matrix([this.rows, 1]);
+		var result = [];
 		for(row = 0; row < this.rows; row++) {
+			result[row] = [0];
 			for(col = 0; col < this.cols; col++) {
-				result[row][0] += this.get(row, col);
+				result[row][0] += this.value[row][col];
 			}
 		}
-
+		result = new Matrix(result);
 		return result;
 	}
 });
