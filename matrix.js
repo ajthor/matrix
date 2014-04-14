@@ -1,11 +1,13 @@
 // Matrix.js
 // =========
 
-// Matrix.js is a costom library developed to address the need for 
-// certain matrix math functions in Javascript. This custom class 
+// Matrix.js is a custom library developed to address the need for 
+// certain matrix math functions in Javascript. This custom object 
 // implements several mathematical functions ranging from basic 
 // addition and subtraction to some more programmer-oriented 
 // functions such as the hadamard (element-wise) product.
+
+'use strict';
 
 // __TODO:__
 // - DETERMINANTS
@@ -13,18 +15,17 @@
 // - TRANSFORMATIONS
 
 // Require underscore.
-'use strict';
 var _ = require('underscore');
 
-// Matrix Class
-// ============
-// The main class in Matrix.js. Treated as (more or less) a reference 
-// data-type from here on out. Defines several properties in the 
-// constructor which are unique to each specific instance, and 
+// Matrix Object
+// =============
+// The main object in Matrix.js. Treated as (more or less) a 
+// reference data-type from here on out. Defines several properties 
+// in the constructor which are unique to each specific instance, and 
 // defines some functions which are available to the object alone.
 var Matrix = module.exports = function Matrix(dimensions) {
 	if(!(this instanceof Matrix)) return new Matrix(dimensions);
-	if(typeof dimensions === 'undefined' && dimensions === null) {
+	if((typeof dimensions === 'undefined') || (dimensions === null)) {
 		dimensions = [2, 2];
 	}
 
@@ -184,14 +185,6 @@ _.extend(Matrix.prototype, {
 			for(col = 0; col < this.cols; col++) {
 				cb.call(handler, this.value[row][col], row, col, this);
 			}
-		}
-	},
-	forEachRow: function(cb, handler) {
-		handler || (handler = this);
-		if(!_.isFunction(cb)) throw 'Must pass a function to the \'forEachRow\' function.';
-		var row;
-		for(row = 0; row < this.rows; row++) {
-			cb.call(handler, this.value[row], row, this);
 		}
 	},
 
@@ -524,11 +517,21 @@ _.extend(Matrix.prototype, {
 		return this;
 	},
 
+}, {
 // Neural Network Matrix Functions
 // -------------------------------
 // These functions are primarily for use with neural networks and 
 // will greatly simplify the operations required for neural network 
 // matrix math operations.
+
+	forEachRow: function(cb, handler) {
+		handler || (handler = this);
+		if(!_.isFunction(cb)) throw 'Must pass a function to the \'forEachRow\' function.';
+		var row;
+		for(row = 0; row < this.rows; row++) {
+			cb.call(handler, this.value[row], row, this);
+		}
+	},
 
 	// Row Sums
 	// --------

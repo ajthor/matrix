@@ -40,10 +40,10 @@ All matrix objects are created using `Matrix(dimensions)`.
 Similarly, you can pass a nested array containing values to 
 the Matrix. All nested arrays should be the same size.
 
-    var A = Matrix([ [ 1, 2 ]
+    var A = Matrix([ [ 1, 2 ],
                      [ 3, 4 ] ]);
                      
-    var B = Matrix([ [ 5, 6 ]
+    var B = Matrix([ [ 5, 6 ],
                      [ 7, 8 ] ]);
                      
 ### Accessing items in the matrix
