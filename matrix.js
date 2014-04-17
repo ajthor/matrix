@@ -76,9 +76,9 @@ var Matrix = module.exports = function Matrix(dimensions) {
 	// Only the first two arrays in a 2D array count. If there are 
 	// deeper nested arrays, it won't pick up on that information.
 	if(is2D) {
-		for(row = 0; row < dimensions.length; row++) {
+		for(row = dimensions.length; row--; ) {
 			this.value[row] = [];
-			for(col = 0; col < dimensions[0].length; col++) {
+			for(col = dimensions[0].length; col--; ) {
 				this.value[row][col] = dimensions[row][col] || 0;
 			}
 		}
@@ -144,8 +144,8 @@ _.extend(Matrix.prototype, {
 	copy: function(M) {
 		var row, col;
 		if(!(M instanceof Matrix)) M = new Matrix(M);
-		for(row = 0; row < M.rows; row++) {
-			for(col = 0; col < M.cols; col++) {
+		for(row = M.rows; row--; ) {
+			for(col = M.cols; col--; ) {
 				this.value[row][col] = M.value[row][col];
 			}
 		}
@@ -161,9 +161,9 @@ _.extend(Matrix.prototype, {
 	map: function(cb, handler) {
 		handler || (handler = this);
 		if(!_.isFunction(cb)) throw 'Must pass a function to the \'map\' function.';
-		var row, col, result;
-		for(row = 0; row < this.rows; row++) {
-			for(col = 0; col < this.cols; col++) {
+		var row, col, rlen, clen, result;
+		for(row = 0, rlen = this.rows; row < rlen; row++) {
+			for(col = 0, clen = this.cols; col < clen; col++) {
 				result = null;
 				result = cb.call(handler, this.value[row][col], row, col, this);
 				if((typeof result !== 'undefined') && (result !== null))
@@ -178,9 +178,9 @@ _.extend(Matrix.prototype, {
 	forEach: function(cb, handler) {
 		handler || (handler = this);
 		if(!_.isFunction(cb)) throw 'Must pass a function to the \'forEach\' function.';
-		var row, col;
-		for(row = 0; row < this.rows; row++) {
-			for(col = 0; col < this.cols; col++) {
+		var row, col, rlen, clen;
+		for(row = 0, rlen = this.rows; row < rlen; row++) {
+			for(col = 0, clen = this.cols; col < clen; col++) {
 				cb.call(handler, this.value[row][col], row, col, this);
 			}
 		}
@@ -188,7 +188,7 @@ _.extend(Matrix.prototype, {
 
 	reset: function() {
 		this.zero();
-		for(var i = 0; i < this.dimensions[0]; i++) {
+		for(var i = this.dimensions[0]; i--; ) {
 			this.set(i, i)(1);
 		}
 	},
@@ -200,10 +200,10 @@ _.extend(Matrix.prototype, {
 	zero: function(value) {
 		value || (value = 0);
 		var row, col;
-		for(row = 0; row < this.rows; row++) {
+		for(row = this.rows; row--; ) {
 			this.value[row] = [];
 
-			for(col = 0; col < this.cols; col++) {
+			for(col = this.cols; col--; ) {
 				if(_.isFunction(value)) this.value[row][col] = value();
 				else this.value[row][col] = value;
 			}
@@ -223,7 +223,7 @@ _.extend(Matrix, {
 		var i, row, result;
 		if(A.rows !== B.rows) throw "Must supply arrays with equal rows.";
 		result = [];
-		for(row = 0; row < A.rows; row++) {
+		for(row = A.rows; row--; ) {
 			result[row] = A.value[row].concat(B.value[row]);
 		}
 		result = new Matrix(result);
@@ -244,10 +244,10 @@ _.extend(Matrix, {
 	// same dimensions. Matrices can also be modified by 
 	// scalar values. E.g. `Matrix.add(3, A, 4);`
 	add: function() {
-		var i;
+		var i, len;
 		var args = Array.prototype.slice.apply(arguments);
 		var first;
-		for(i = 0; i < args.length && !first; i++) {
+		for(i = 0, len = args.length; i < len && !first; i++) {
 			if(args[i] instanceof Matrix) first = args[i];
 		}
 
@@ -269,10 +269,10 @@ _.extend(Matrix, {
 	//     C = new Matrix([3,3]);
 	//     result = Matrix.sub(A, B, C, 3); // result = A - B - C - 3
 	sub: function() {
-		var i, val;
+		var i, len, val;
 		var args = Array.prototype.slice.apply(arguments);
 		var first;
-		for(i = 0; i < args.length && !first; i++) {
+		for(i = 0, len = args.length; i < len && !first; i++) {
 			if(args[i] instanceof Matrix) first = args[i];
 		}
 
@@ -304,11 +304,10 @@ _.extend(Matrix, {
 
 	// The resulting matrix __C__ will be a *n*x*p* matrix.
 	dot: function() {
-		var i, j, sum, A, B, row, col, result;
+		var i, j, len, sum, A, B, row, col, rlen, clen, result;
 		var args = Array.prototype.slice.apply(arguments);
 
-		// [0, 1, 2, 3, 4] l = 5
-		for(i = 0; i < args.length-1; i++) {
+		for(i = 0, len = args.length-1; i < len; i++) {
 			if(!result) {
 				A = args[i];
 			} else {
@@ -323,11 +322,11 @@ _.extend(Matrix, {
 			result = new Matrix([A.rows, B.cols]);
 			result.zero();
 
-			for(row = 0; row < A.rows; row++) {
-				for(col = 0; col < B.cols; col++) {
+			for(row = 0, rlen = A.rows; row < rlen; row++) {
+				for(col = 0, clen = B.cols; col < clen; col++) {
 
 					sum = 0;
-					for(j = 0; j < A.cols; j++) {
+					for(j = A.cols; j--; ) {
 						sum += A.value[row][j] * B.value[j][col];
 					}
 					result.value[row][col] = sum;
@@ -375,9 +374,9 @@ _.extend(Matrix, {
 _.extend(Matrix.prototype, {
 
 	add: function() {
-		var i, row, col, val;
+		var i, len, row, col, rlen, clen, val;
 		var args = Array.prototype.slice.apply(arguments);
-		for(i = 0; i < args.length; i++) {
+		for(i = 0, len = args.length; i < len; i++) {
 			if(typeof args[i] === 'number') {
 				val = args[i];
 				args[i] = new Matrix(this.dimensions);
@@ -387,8 +386,8 @@ _.extend(Matrix.prototype, {
 				throw 'Cannot add matrices of different dimensions.';
 			}
 
-			for(row = 0; row < this.rows; row++) {
-				for(col = 0; col < this.cols; col++) {
+			for(row = 0, rlen = this.rows; row < rlen; row++) {
+				for(col = 0, clen = this.cols; col < clen; col++) {
 					this.value[row][col] += args[i].value[row][col];
 				}
 			}
@@ -397,9 +396,9 @@ _.extend(Matrix.prototype, {
 	},
 
 	sub: function() {
-		var i, row, col, val;
+		var i, len, row, col, rlen, clen, val;
 		var args = Array.prototype.slice.apply(arguments);
-		for(i = 0; i < args.length; i++) {
+		for(i = 0, len = args.length; i < len; i++) {
 			if(typeof args[i] === 'number') {
 				val = args[i];
 				args[i] = new Matrix(this.dimensions);
@@ -409,8 +408,8 @@ _.extend(Matrix.prototype, {
 				throw 'Cannot subtract matrices of different dimensions.';
 			}
 
-			for(row = 0; row < this.rows; row++) {
-				for(col = 0; col < this.cols; col++) {
+			for(row = 0, rlen = this.rows; row < rlen; row++) {
+				for(col = 0, clen = this.cols; col < clen; col++) {
 					this.value[row][col] -= args[i].value[row][col];
 				}
 			}
@@ -426,9 +425,9 @@ _.extend(Matrix.prototype, {
 	// square dimensions. If this matrix is not square, it will not 
 	// be able to use the `dot()` function.
 	dot: function() {
-		var i, result;
+		var i, len, result;
 		var args = Array.prototype.slice.apply(arguments);
-		for(i = 0; i < args.length; i++) {
+		for(i = 0, len = args.length; i < len; i++) {
 			if((this.rows !== this.cols) || !_.isEqual(this.dimensions, args[i].dimensions))
 				throw 'Must supply matrices of equal dimensions. To multiply rectangular matrices, use the Matrix.dot() function.';
 		}
@@ -448,14 +447,14 @@ _.extend(Matrix.prototype, {
 	// any order, but the dot product arguments must be of the same 
 	// dimensions (see dot product note above).
 	product: function() {
-		var i, row, col;
+		var i, len, row, col;
 		var args = Array.prototype.slice.apply(arguments);
-		for(i = 0; i < args.length; i++) {
+		for(i = 0, len = args.length; i < len; i++) {
 
 			// Scalar multiplication.
 			if(typeof args[i] === 'number') {
-				for(row = 0; row < this.rows; row++) {
-					for(col = 0; col < this.cols; col++) {
+				for(row = this.rows; row--; ) {
+					for(col = this.cols; col--; ) {
 						this.value[row][col] *= args[i];
 					}
 				}
@@ -474,9 +473,9 @@ _.extend(Matrix.prototype, {
 	// straight across. Element *ij* in matrix __A__ is multiplied by 
 	// element *ij* in matrix __B__.
 	mult: function() {
-		var i, row, col, val;
+		var i, len, row, col, val;
 		var args = Array.prototype.slice.apply(arguments);
-		for(i = 0; i < args.length; i++) {
+		for(i = 0, len = args.length; i < len; i++) {
 			if(typeof args[i] === 'number') {
 				val = args[i];
 				args[i] = new Matrix(this.dimensions);
@@ -486,8 +485,8 @@ _.extend(Matrix.prototype, {
 				throw 'Cannot compute the hadamard (element-wise) product of matrices of different dimensions.';
 			}
 
-			for(row = 0; row < this.rows; row++) {
-				for(col = 0; col < this.cols; col++) {
+			for(row = this.rows; row--; ) {
+				for(col = this.cols; col--; ) {
 					this.value[row][col] *= args[i].value[row][col];
 				}
 			}
@@ -525,8 +524,8 @@ _.extend(Matrix.prototype, {
 	forEachRow: function(cb, handler) {
 		handler || (handler = this);
 		if(!_.isFunction(cb)) throw 'Must pass a function to the \'forEachRow\' function.';
-		var row;
-		for(row = 0; row < this.rows; row++) {
+		var row, rlen;
+		for(row = 0, rlen = this.rows; row < rlen; row++) {
 			cb.call(handler, this.value[row], row, this);
 		}
 	},
@@ -537,9 +536,9 @@ _.extend(Matrix.prototype, {
 	sum: function() {
 		var row, col;
 		var result = [];
-		for(row = 0; row < this.rows; row++) {
+		for(row = this.rows; row--; ) {
 			result[row] = [0];
-			for(col = 0; col < this.cols; col++) {
+			for(col = this.cols; col--; ) {
 				result[row][0] += this.value[row][col];
 			}
 		}
