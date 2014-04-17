@@ -152,9 +152,7 @@ _.extend(Matrix.prototype, {
 	},
 
 	clone: function() {
-		var result = new this.constructor(this.dimensions);
-		result.copy(this);
-		return result;
+		return new this.constructor(this.value);
 	},
 	// Map Function
 	// ------------
