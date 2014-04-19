@@ -220,13 +220,33 @@ _.extend(Matrix, {
 	// existing rows. Joined matrices must have the same 
 	// number of rows.
 	join: function(A, B) {
-		var i, row, result;
+		var row, result;
 		if(A.rows !== B.rows) throw "Must supply arrays with equal rows.";
 		result = [];
 		for(row = A.rows; row--; ) {
 			result[row] = A.value[row].concat(B.value[row]);
 		}
 		result = new Matrix(result);
+		return result;
+	},
+
+	// Concat Function
+	// ---------------
+	// Merges two matrices together depending on the dimensions of 
+	// the matrices passed to the function. If the number of rows are 
+	// the same, it will attempt to join them, if the columns are the 
+	// same, it will do a column concat.
+	concat: function(A, B) {
+		var i, result;
+		if(A.rows === B.rows) {
+			return Matrix.join(A, B);
+		}
+		else if(A.cols === B.cols) {
+			result = A.value.concat(B.value);
+		}
+		else {
+			throw "Must supply matrices with compatible dimensions.";
+		}
 		return result;
 	},
 
